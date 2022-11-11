@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+import pytz
 import re
 
 
@@ -17,33 +18,29 @@ def getTimestamp(postID):
 
 
 def timestampToDate(ts):
-    actual_time = datetime.utcfromtimestamp(ts/1000)
-    return actual_time
+    actual_time = datetime.utcfromtimestamp(ts/1000).strftime("%Y-%m-%d %H:%M:%S %Z")
+    tz = pytz.timezone('Europe/Paris')
+    localtime = datetime.fromtimestamp(ts/1000, tz).strftime("%Y-%m-%d %H:%M:%S %Z")
+    return actual_time, localtime
 
 
 
 def main():
 
-    # st.title('Date extractor for Linkedin Post')
-    # user_input = st.text_area("Paste the link to the linkedin post to get the post date", '"https://www.linkedin.com/posts/andrew-akbashev_career-phd-research-activity-6994809664748027904-sPab?utm_source=share&utm_medium=member_desktop"')
-    # if user_input is not None:
-    #     postID = getPostID(user_input)
-    #     timestamp = getTimestamp(postID)
-    #     actualdate = timestampToDate(timestamp)
-    # st.title(actualdate)
 
     user_input = st.sidebar.text_input("Enter the link to the post")
     state = st.sidebar.button("Get Date!")
     if state:
         postID = getPostID(user_input)
         timestamp = getTimestamp(postID)
-        actualdate = timestampToDate(timestamp)
-
-        if actualdate:
+        dates = timestampToDate(timestamp)
+        
+        if dates:
               
             
-            st.write(f"Published Date - {actualdate}")
-           
+            st.write(f"Published Date - {dates[0]}")
+            st.write(f"Published Date (local time) - {dates[1]}")
+
             st.markdown("---")
                 
         else:
