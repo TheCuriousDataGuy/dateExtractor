@@ -6,6 +6,7 @@ import re
 
 def getPostID(text):
     a= re.findall(r"\D(\d{19})\D", text)
+    a= re.findall(r"\d{19}", text)
     a = int(''.join(a))
     a = format(a, 'b')
     return a
